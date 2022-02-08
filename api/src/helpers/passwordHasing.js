@@ -8,6 +8,8 @@ passwordHashing.encryption = async (password) => {
     return hash;
 };
 
-passwordHashing.decryption = async (hasedPassword) => {};
+passwordHashing.compare = async (password, hasedPassword) => {
+    return await bcrypt.compare(password, hasedPassword);
+};
 
 module.exports = passwordHashing;
