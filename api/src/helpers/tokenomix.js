@@ -7,14 +7,14 @@ const { apiError } = require('../constants/constant.errorList');
 const printer = require('./printer');
 
 const jwToken = {};
-jwToken.refreshTokens = [];
+jwToken.tokenBox = [];
 
 jwToken.createAccessToken = (user) => {
     const accessToken = jwt.sign(
         { username: user.username, _id: user._id },
         JWT_ACCESS_TOKEN,
         {
-            expiresIn: '30s',
+            expiresIn: '5s',
         }
     );
     return accessToken;
@@ -25,7 +25,7 @@ jwToken.createRefreshToken = (user) => {
         { username: user.username, _id: user._id },
         JWT_REFRESH_TOKEN
     );
-    jwToken.refreshTokens.push(refreshToken);
+    jwToken.tokenBox.push(refreshToken);
     return refreshToken;
 };
 
@@ -34,9 +34,10 @@ jwToken.verifyAccesToken = (req, res, next) => {
 
     if (authHeader) {
         const accessToken = authHeader;
+
         jwt.verify(accessToken, JWT_ACCESS_TOKEN, (err, decode) => {
             if (err) {
-                res.status(410).json(apiError[410]);
+                res.status(401).json(err.name);
             } else {
                 req.user = decode;
                 next();
@@ -49,21 +50,23 @@ jwToken.verifyAccesToken = (req, res, next) => {
 
 jwToken.refresher = async (req, res) => {
     const refreshToken = req.body.token;
+
     if (!refreshToken) res.status(409).json(apiError[409]);
-    if (!jwToken.refreshTokens.includes(refreshToken))
+
+    if (!jwToken.tokenBox.includes(refreshToken))
         res.status(411).json(apiError[411]);
 
     jwt.verify(refreshToken, JWT_REFRESH_TOKEN, (err, decode) => {
         if (err) {
             res.status(411).json(apiError[411]);
         } else {
-            jwToken.refreshTokens = jwToken.refreshTokens.filter(
+            jwToken.tokenBox = jwToken.tokenBox.filter(
                 (token) => token !== refreshToken
             );
 
             const newAccessToken = jwToken.createAccessToken(decode);
             const newRefreshToken = jwToken.createRefreshToken(decode);
-            jwToken.refreshTokens.push(newRefreshToken);
+            jwToken.tokenBox.push(newRefreshToken);
             res.status(200).json({
                 accessToken: newAccessToken,
                 refreshToken: newRefreshToken,

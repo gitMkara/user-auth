@@ -73,7 +73,7 @@ const loginUser = async (req, res) => {
 const logoutUser = async (req, res) => {
     try {
         const refreshToken = req.body.token;
-        jwToken.refreshTokens = jwToken.refreshTokens.filter(
+        jwToken.tokenBox = jwToken.tokenBox.filter(
             (token) => token !== refreshToken
         );
         res.status(200).json('User Logout');
