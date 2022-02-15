@@ -14,7 +14,7 @@ jwToken.createAccessToken = (user) => {
         { username: user.username, _id: user._id },
         JWT_ACCESS_TOKEN,
         {
-            expiresIn: '5s',
+            expiresIn: '3s',
         }
     );
     return accessToken;

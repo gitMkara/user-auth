@@ -10,6 +10,8 @@ const postman = axios.create({
 
 postman.interceptors.request.use(
     (req) => {
+        if (req.url === '/auth/login') window.localStorage.clear();
+
         const accesToken = token.getLocalAccessToken();
         if (accesToken) {
             console.log('header updated');
@@ -26,19 +28,31 @@ postman.interceptors.request.use(
 postman.interceptors.response.use(
     (res) => {
         console.log(res.data);
-        if (res.config.url == '/auth/login') {
+
+        if (res.config.url === '/auth/login') {
+            window.localStorage.clear();
             token.setUser(res.data);
             postman.defaults.headers.common['authorization'] =
                 token.getLocalAccessToken();
         }
-
         return res;
     },
     async (err) => {
         if (err.response.data === 'TokenExpiredError') {
-            
-
-            //return postman(err.config);
+            const rs = await postman
+                .post('/auth/refresh', {
+                    token: token.getLocalRefreshToken(),
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+            const userStorage = token.getUser();
+            userStorage.accessToken = rs.data.accessToken;
+            userStorage.refreshToken = rs.data.refreshToken;
+            token.setUser(userStorage);
+            postman.defaults.headers.common['authorization'] =
+                rs.data.accessToken;
+            return postman(err.config.url);
         } else {
             return Promise.reject(err);
         }

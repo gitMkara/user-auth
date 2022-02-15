@@ -1,7 +1,6 @@
 import './App.scss';
 import React from 'react';
-import postman from './services/api';
-import axios from 'axios';
+import postman from './services/api-2';
 
 export default function App() {
     const login = async () => {
