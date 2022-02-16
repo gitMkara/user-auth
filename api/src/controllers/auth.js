@@ -24,7 +24,7 @@ const registerUser = async (req, res) => {
                 return user;
             },
             (err) => {
-                console.log(printer.error(apiError[403]));
+                console.log(err);
                 res.status(403).json(apiError[403]);
             }
         );
