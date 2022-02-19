@@ -35,7 +35,7 @@ postman.interceptors.request.use(
                             token.setUser(userStorage);
                             postman.defaults.headers.common['authorization'] =
                                 response.data.accessToken;
-                            postman('/user/test');
+
                             return response;
                         });
 

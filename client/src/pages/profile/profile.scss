@@ -1,40 +1,34 @@
-.login {
+.profile {
     width: 100vw;
     height: 100vh;
-    
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    .loginForm {
+    .profileForm {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        
+
         padding: 0 1em;
-        border: solid 1.5em rgba(#000, .03);
-        box-shadow: 2px 2px 5px rgba(#000, .2), 
-        2px 2px 17px rgba(#000, .35), 
-        2px 2px 25px rgba(#000, .5);
+        border: solid 1.5em rgba(#000, 0.03);
+        box-shadow: 2px 2px 5px rgba(#000, 0.2), 2px 2px 17px rgba(#000, 0.35),
+            2px 2px 25px rgba(#000, 0.5);
 
-        h1{
+        h1 {
             margin-bottom: 10px;
-
         }
-        .btn{
+        .btn {
             width: 200px;
             color: black;
             font-size: 25px;
-            background-color:lime;
+            background-color: lightseagreen;
             margin: 5px 0;
         }
-        .registerBtn {
-            background-color: coral;
-        }
 
-        .textfield{
+        .textfield {
             margin-bottom: 5px;
         }
     }
