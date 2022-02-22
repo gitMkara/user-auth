@@ -1,23 +1,38 @@
 import './login.scss';
-import React, { useRef, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import reqControler from '../../services/req-controler';
 import Button from '@mui/material/Button';
 import { TextField } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
+import Actions from '../../context/Actions';
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const { user, dispatch, isFetching } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        reqControler.login(username, password);
+        dispatch(Actions.loginStart());
+        reqControler
+            .login(username, password)
+            .then((response) => {
+                dispatch(Actions.loginSuccess(response.data.username));
+                navigate('/profile');
+                return response;
+            })
+            .catch((err) => {
+                dispatch(Actions.loginFailure());
+                return err;
+            });
     };
 
     return (
         <div className='login'>
             <form className='loginForm' onSubmit={handleSubmit}>
                 <h1>Login Page</h1>
-
+                <h2>{user}</h2>
                 <TextField
                     required
                     id='outlined-required'
@@ -35,14 +50,13 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     type='password'
                 />
-                <Link to='/profile'>
-                    <Button className='btn' variant='contained' type='submit'>
-                        LOGIN
-                    </Button>
-                </Link>
+
+                <Button className='btn' variant='contained' type='submit'>
+                    LOGIN
+                </Button>
             </form>
-            <Button variant='contained'>
-                <Link to='/register'>REGISTER</Link>
+            <Button variant='contained' onClick={() => navigate('/register')}>
+                REGISTER
             </Button>
         </div>
     );

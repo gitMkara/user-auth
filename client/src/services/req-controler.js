@@ -1,13 +1,15 @@
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import postman from './api-2';
+import token from './token';
 
 const login = async (username, password) => {
-    await postman
+    return await postman
         .post('/auth/login', {
             username,
             password,
         })
         .catch((err) => console.log(err));
-    return;
 };
 
 const getUserList = async () => {
@@ -35,8 +37,7 @@ const updateUserFunc = async (username, password, email) => {
     if (password.length > 0) updatedValues['password'] = password;
     if (email.length > 0) updatedValues['email'] = email;
 
-    await postman.put('/user/update/' + username, updatedValues);
-    window.location.reload();
+    return await postman.put('/user/update/' + username, updatedValues);
 };
 
 const reqControler = {
